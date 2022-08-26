@@ -58,3 +58,43 @@ public class SubsetImplement {
 6. powerSet(0)의 21번째 줄이 시행될 때까지 이를 반복한다.
 
 function call은 Stack 위에서 이루어진다. 이를 유념하여 생각하면 편하다.
+
+## 주의 사항
+
+다음과 같은 부분집합법 메소드를 작성했다고 하자.
+
+```java
+// 잘못된 사례
+
+static void func(int var, StringBuilder sb, int depth){
+	// 기저 조건
+	if(depth == 7){
+		~~~  // (a)
+		return;
+	}
+
+	depth++;
+	sb.append(var);
+	func(var, sb, depth);
+}
+```
+
+위의 경우, depth가 기저 조건을 만족할 때까지 재귀를 반복하다가, 기저조건에 도달하면 해당 조건문(a)을 수행한 후 그 재귀함수를 호출했던 메소드로 돌아간다.
+이 때, 재귀 전에 수행한 sb.append("var")은 참조자료형이기 때문에 주소값이 계속해서 공유되기 때문에 잘못된 결과를 초래할 수 있다. 기본 자료형인 int depth는 함수 호출때마다 생성과 소멸을 반복하기 때문에 공유되지 않는다.
+
+이를 해결하기 위해 다음과 같이 함수를 설정하면 된다.
+
+```java
+// 올바른 사례
+
+static void func(int var, StringBuilder sb, int depth){
+	// 기저 조건
+	if(depth == 7){
+		~~~  // (a)
+		return;
+	}
+
+	depth++;
+	func(var, sb.append(var), depth);
+}
+```
